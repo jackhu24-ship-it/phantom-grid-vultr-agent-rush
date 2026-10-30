@@ -1,0 +1,11 @@
+services:
+  orchestrator:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - VULTR_INFERENCE_URL=https://api.vultrinference.com/v1/chat/completions
+      - VULTR_API_KEY=${VULTR_API_KEY:-MOCK_KEY_FOR_TESTING}
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped

@@ -1,0 +1,34 @@
+graph LR
+    subgraph PublicCloud["Untrusted Internet / Public Zone"]
+        WebTraffic["Operator Web Traffic"]
+        Adversary["Adversarial Injections & Malicious Scripts"]
+    end
+
+    subgraph HostVM["Vultr Cloud VM Perimeter"]
+        Ingress["Reverse Proxy & TLS Termination"]
+        App["FastAPI Orchestrator Service"]
+        Fuse["50GB Circuit Breaker & Watchdog"]
+        ZDRCore["ZDR 0xAA -> 0x00 Purge Engine"]
+    end
+
+    subgraph SandboxBoundary["Isolated Container Boundary"]
+        DockerBox["Throwaway Container"]
+        Cgroup["Cgroups: Max 2 CPU / 4GB RAM"]
+        SecComp["Seccomp Filter: No Host Syscalls"]
+        Veth["Isolated Virtual Bridge: No Host LAN"]
+    end
+
+    subgraph VultrInference["Vultr Managed AI Infrastructure"]
+        VSI["Vultr Serverless Inference Endpoint"]
+    end
+
+    WebTraffic --> Ingress
+    Ingress --> App
+    App --> VSI
+    App --> SandboxBoundary
+    Adversary -.->|"Trapped in"| DockerBox
+    DockerBox -.->|"Blocked by"| SecComp
+    DockerBox -.->|"Blocked by"| Cgroup
+    DockerBox -.->|"Blocked by"| Veth
+    App --> Fuse
+    App --> ZDRCore

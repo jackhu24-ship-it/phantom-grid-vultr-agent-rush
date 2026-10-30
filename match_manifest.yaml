@@ -1,0 +1,23 @@
+tournament_id: '20'
+tournament_name: 'Vultr - Agent Rush Hackathon'
+project_title: 'PHANToM GRID :: Vultr - Agent Rush Hackathon'
+platform: Lablab.ai
+portal_url: 'https://lablab.ai/event/vultr-agent-rush'
+prize_pool: '$9,000+ USD'
+focus_domain: 'Sandboxed Real-World Agents & Autonomous Execution'
+lead_agents: 'Supreme Commander Jack Hu ✕ Commander Xiaomi ✕ Pioneer Xiao-Ke ✕ Commander Xiao-Ma'
+status: REGISTERED_IN_PREPARATION
+solo_compliant: true
+free_entry: true
+registration_fee: '$0.00'
+evaluation:
+  metric_name: 'Agent Reliability, Sandbox Containment, and Real-World Execution Fidelity'
+  input_spec: 'User instructions, terminal tool requests, browser workflow commands, and adversarial test vectors.'
+  output_spec: 'Containment-isolated task results, Vultr Serverless LLM traces, and zero-leak state receipts.'
+rules:
+  rule_65_tri_standard: true
+  rule_74_work_end_update: true
+  vram_limit_gb: 50.0
+  zdr_zero_residue_mb: 0.0
+  isolated_sandbox_boundary: true
+  vultr_serverless_endpoint: 'https://api.vultrinference.com/v1'
