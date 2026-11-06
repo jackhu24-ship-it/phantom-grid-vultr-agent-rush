@@ -71,22 +71,47 @@
     }
 
     #virtual-cursor {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="white" stroke="%2300F2FE" stroke-width="1.8"><polygon points="3 3 3 21 8.5 15.5 13.5 21 16 20 11 14.5 18 14.5 3 3"/></svg>');
-      background-size: contain;
-      background-repeat: no-repeat;
+      position: fixed;
+      top: 0;
+      left: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
       pointer-events: none;
       z-index: 9999;
       transform: translate(0, 0);
-      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s;
+      transition: none;
       opacity: 0;
     }
 
-    #virtual-cursor.clicking {
-      transform: scale(0.82);
-      filter: drop-shadow(0 0 12px #00F2FE);
+    #virtual-cursor-icon {
+      width: 34px;
+      height: 34px;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 28 28"><circle cx="6" cy="6" r="5" fill="rgba(0,242,254,0.35)"/><polygon points="4 4 4 23 9.8 17.2 14.8 23 17.5 21.8 12.5 16 20 16 4 4" fill="%23FFFFFF" stroke="%2300F2FE" stroke-width="2"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      filter: drop-shadow(0 0 10px #00F2FE);
+      flex-shrink: 0;
+    }
+
+    #virtual-cursor-label {
+      background: rgba(7, 9, 19, 0.94);
+      border: 1.5px solid #00F2FE;
+      color: #00F2FE;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 18px rgba(0, 242, 254, 0.45);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+
+    .director-focus-target {
+      outline: 2px solid #00F2FE !important;
+      box-shadow: 0 0 28px rgba(0, 242, 254, 0.35), inset 0 0 15px rgba(0, 242, 254, 0.12) !important;
+      border-radius: 14px;
     }
 
     .scene {
@@ -117,7 +142,7 @@
 <body class="w-screen h-screen relative flex flex-col justify-between items-center p-6 sm:p-10">
 
   <canvas id="grid-canvas"></canvas>
-  <div id="virtual-cursor"></div>
+  <div id="virtual-cursor"><div id="virtual-cursor-icon"></div><div id="virtual-cursor-label">FOCUS</div></div>
 
   <!-- ========================================================================= -->
   <!-- 1. TOP HEADER HUD (PHANToM GRID Sovereign Telemetry & Dock Status)        -->
@@ -181,14 +206,14 @@
           <span>🚨</span>
           <span>ACT 1 :: EXISTENTIAL AGENT CONTAINMENT GATEWAY</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.15] text-white">
+        <h1 id="act1-hero-title" class="text-4xl sm:text-5xl font-extrabold tracking-tight leading-[1.15] text-white p-2">
           Contain Threats.<br>
           <span class="bg-clip-text text-transparent bg-gradient-to-r from-brand-cyan via-blue-400 to-indigo-400">
             Execute Safely
           </span><br>
           on Vultr Cloud.
         </h1>
-        <p class="text-slate-300 text-base max-w-xl leading-relaxed">
+        <p id="act1-threat-desc" class="text-slate-300 text-base max-w-xl leading-relaxed p-2.5">
           Unconstrained agents executing shell commands expose cloud hosts to recursive wipes (<code class="text-rose-400 font-mono">rm -rf /</code>) and fork bombs. PHANToM GRID isolates every tool call inside ephemeral throwaway Docker containers powered by Vultr Serverless Inference.
         </p>
         <div class="flex items-center space-x-4 pt-2">
@@ -201,7 +226,7 @@
         </div>
       </div>
 
-      <div class="w-full lg:w-[480px] glass-panel glass-panel-glow rounded-3xl p-7 space-y-5">
+      <div id="act1-telemetry-card" class="w-full lg:w-[480px] glass-panel glass-panel-glow rounded-3xl p-7 space-y-5">
         <div class="flex justify-between items-center pb-2 border-b border-white/10">
           <span class="font-bold text-sm text-slate-200 font-mono">Vultr Sandbox Defense Telemetry</span>
           <span class="w-3 h-3 rounded-full bg-brand-emerald animate-pulse"></span>
@@ -257,7 +282,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div id="act2-kpi-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="glass-panel rounded-2xl p-4">
           <div class="text-xs font-mono text-slate-400 mb-1">Cloud Provider</div>
           <div class="text-sm font-bold font-mono text-white flex items-center space-x-1.5">
@@ -288,9 +313,9 @@
           <span class="text-xs font-mono text-brand-cyan font-normal">(Zero Host Privilege Escalation)</span>
         </h3>
 
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.04] border border-white/10 gap-3">
+        <div id="act2-tier1-row" class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.04] border border-white/10 gap-3">
           <div class="flex items-center space-x-4 min-w-[260px]">
-            <span class="text-xs font-mono text-brand-cyan font-bold">Tier #1 Ingress</span>
+            <span id="act2-tier1-tag" class="text-xs font-mono text-brand-cyan font-bold">Tier #1 Ingress</span>
             <span class="text-sm font-bold font-mono text-white">Vultr Serverless LLM Router</span>
           </div>
           <div class="flex-1 px-2">
@@ -301,9 +326,9 @@
           <span class="text-xs font-mono text-brand-emerald font-semibold">✔ CONNECTED</span>
         </div>
 
-        <div class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.04] border border-white/10 gap-3">
+        <div id="act2-tier2-row" class="flex items-center justify-between p-3 rounded-2xl bg-white/[0.04] border border-white/10 gap-3">
           <div class="flex items-center space-x-4 min-w-[260px]">
-            <span class="text-xs font-mono text-blue-400 font-bold">Tier #2 Sandbox</span>
+            <span id="act2-tier2-tag" class="text-xs font-mono text-blue-400 font-bold">Tier #2 Sandbox</span>
             <span class="text-sm font-bold font-mono text-white">Ephemeral Air-Gapped Container</span>
           </div>
           <div class="flex-1 px-2">
@@ -351,7 +376,7 @@
             </div>
             <div class="space-y-2">
               <label class="text-xs font-mono text-slate-400">Injected Malicious Shell Command</label>
-              <div class="w-full bg-slate-900/95 border border-rose-500/40 rounded-xl px-4 py-3 font-mono text-xs text-rose-400">
+              <div id="act3-payload-box" class="w-full bg-slate-900/95 border border-rose-500/40 rounded-xl px-4 py-3 font-mono text-xs text-rose-400">
                 $ rm -rf / --no-preserve-root &amp;&amp; :(){ :|:&amp; };:
               </div>
             </div>
@@ -415,7 +440,7 @@
             <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
             <span class="text-[11px] ml-2 text-slate-300">vultr-sandbox-terminal — 80x24</span>
           </div>
-          <div class="space-y-2.5 leading-relaxed">
+          <div id="act4-terminal-cmd" class="space-y-2.5 leading-relaxed p-2">
             <div class="text-brand-cyan">$ python 02_SourceCode/runner.py --task "cluster_telemetry"</div>
             <div class="text-slate-300 pl-3">[SANDBOX] Authorized workflow completed in 18.4 ms</div>
             <div class="text-amber-300 pl-3">[WATCHDOG] Peak Memory: 2.45 GB / 50.0 GB Fuse [PASS]</div>
@@ -435,12 +460,12 @@
               <span>✔ Ephemeral Container Teardown</span>
               <span class="text-brand-cyan font-bold">100% Isolated</span>
             </div>
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.04]">
-              <span>✔ Hardware Memory Circuit Breaker</span>
+            <div id="act4-inv-vram" class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.04]">
+              <span id="act4-vram-span">✔ Hardware Memory Circuit Breaker</span>
               <span class="text-brand-emerald font-bold">2.45 / 50.0 GB</span>
             </div>
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.04]">
-              <span>✔ Two-Pass ZDR Physical Scrub</span>
+            <div id="act4-inv-zdr" class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.04]">
+              <span id="act4-zdr-span">✔ Two-Pass ZDR Physical Scrub</span>
               <span class="text-brand-emerald font-bold">0.00 MB Residue</span>
             </div>
             <div class="flex items-center justify-between p-2.5 rounded-xl bg-white/[0.04]">
@@ -465,19 +490,19 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
         <div class="glass-panel rounded-3xl p-6 font-mono text-xs flex flex-col justify-between space-y-4">
           <div class="text-brand-cyan font-bold text-sm">Instant 3-Line Terminal Reproduction</div>
-          <div class="space-y-2.5 bg-slate-950/90 p-4 rounded-2xl border border-white/10 text-slate-200">
+          <div id="act5-repro-box" class="space-y-2.5 bg-slate-950/90 p-4 rounded-2xl border border-white/10 text-slate-200">
             <div><span class="text-brand-emerald">$</span> git clone -b main https://github.com/jackhu24-ship-it/phantom-grid-vultr-agent-rush.git</div>
             <div><span class="text-brand-emerald">$</span> cd phantom-grid-vultr-agent-rush &amp;&amp; pip install -r 02_SourceCode/requirements.txt</div>
             <div><span class="text-brand-emerald">$</span> python 02_SourceCode/runner.py --mock</div>
           </div>
-          <div class="p-3 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold flex justify-between items-center">
+          <div id="act5-sovereign-plaque" class="p-3 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 font-bold flex justify-between items-center">
             <span>🎖️ LEADER &amp; ARCHITECT: JACK HU</span>
             <span>👩‍💼 PRODUCER: COMMANDER XIAOMI</span>
           </div>
         </div>
 
-        <div class="glass-panel glass-panel-glow rounded-3xl p-6 flex flex-col justify-between space-y-3">
-          <h4 class="text-sm font-bold text-white font-mono">10-Drawer Tournament Parity Package</h4>
+        <div id="act5-parity-card" class="glass-panel glass-panel-glow rounded-3xl p-6 flex flex-col justify-between space-y-3">
+          <h4 id="act5-parity-head" class="text-sm font-bold text-white font-mono">10-Drawer Tournament Parity Package</h4>
           <div class="space-y-2 font-mono text-xs text-slate-200">
             <div class="flex items-center space-x-3 p-2 rounded-xl bg-white/[0.04]">
               <span class="text-brand-emerald font-bold">✔</span>
@@ -607,29 +632,30 @@
       timecodeEl.innerText = `${Math.floor(currentTime)}s / ${TOTAL_DURATION}s`;
     }
 
-    function setDirectorState(sceneIdx, subText, elapsedSec, clickTargetSelector, clickPhase) {
+    function setDirectorState(sceneIdx, subText, elapsedSec, clickTargetSelector, clickPhase, cursorLabel) {
       showScene(sceneIdx);
       if (subText) subtitleEl.innerText = subText;
       currentTime = elapsedSec;
       updateTimelineUI();
 
+      document.querySelectorAll('.director-focus-target').forEach(el => el.classList.remove('director-focus-target'));
+      const labelEl = document.getElementById('virtual-cursor-label');
+
       if (clickTargetSelector) {
         const target = document.querySelector(clickTargetSelector);
         if (target) {
+          target.classList.add('director-focus-target');
+          if (labelEl && cursorLabel) labelEl.innerText = cursorLabel;
           const rect = target.getBoundingClientRect();
-          const tx = rect.left + rect.width / 2;
-          const ty = rect.top + rect.height / 2;
+          let tx = Math.min(window.innerWidth - 320, Math.max(40, rect.left + Math.min(rect.width * 0.55, 280)));
+          let ty = Math.min(window.innerHeight - 190, Math.max(40, rect.bottom - 8));
           cursorEl.style.opacity = '1';
           if (clickPhase === 'approach') {
-            cursorEl.classList.remove('clicking');
-            cursorEl.style.transform = `translate(${tx + 120}px, ${ty + 90}px)`;
+            cursorEl.style.transform = `translate(${tx + 35}px, ${ty + 24}px)`;
           } else if (clickPhase === 'hover') {
-            cursorEl.classList.remove('clicking');
             cursorEl.style.transform = `translate(${tx}px, ${ty}px)`;
           } else if (clickPhase === 'click') {
-            cursorEl.style.transform = `translate(${tx}px, ${ty}px) scale(0.82)`;
-            cursorEl.classList.add('clicking');
-            target.classList.add('ring-4', 'ring-brand-cyan');
+            cursorEl.style.transform = `translate(${tx}px, ${ty}px) scale(0.92)`;
             if (sceneIdx === 2) {
               const statusBox = document.getElementById('payout-status-box');
               const payoutAmount = document.getElementById('payout-amount');
@@ -640,6 +666,8 @@
                 statusBox.className = 'p-3.5 rounded-2xl bg-brand-emerald/20 border border-brand-emerald/50 flex items-center justify-between text-xs font-mono text-brand-emerald font-bold';
               }
             }
+          } else {
+            cursorEl.style.transform = `translate(${tx}px, ${ty}px)`;
           }
         }
       } else {
