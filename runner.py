@@ -20,8 +20,11 @@ from containment.sandbox_runner import SandboxSupervisor
 class TrackARunner:
     MAX_VRAM_GB = 50.0
 
-    def __init__(self, endpoint: str = "https://api.vultrinference.com/v1"):
-        self.endpoint = endpoint
+    def __init__(self, endpoint: str = None):
+        self.openai_api_base = os.environ.get("OPENAI_API_BASE", endpoint or "https://api.vultrinference.com/v1")
+        self.endpoint = self.openai_api_base
+        self.vultr_api_key = os.environ.get("VULTR_API_KEY", "MOCK_KEY_FOR_TESTING")
+        self.sandbox_mode = os.environ.get("SANDBOX_MODE", "strict")
         self.state = "INITIALIZED"
         self.supervisor = SandboxSupervisor(timeout_sec=15)
         self.simulated_ram_gb = 2.45

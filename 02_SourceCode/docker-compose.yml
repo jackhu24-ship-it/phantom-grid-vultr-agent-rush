@@ -4,8 +4,10 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - OPENAI_API_BASE=https://api.vultrinference.com/v1
       - VULTR_INFERENCE_URL=https://api.vultrinference.com/v1/chat/completions
       - VULTR_API_KEY=${VULTR_API_KEY:-MOCK_KEY_FOR_TESTING}
+      - SANDBOX_MODE=strict
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped

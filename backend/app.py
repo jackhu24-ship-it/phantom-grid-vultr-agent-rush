@@ -38,15 +38,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-VULTR_SERVERLESS_URL = os.environ.get("VULTR_INFERENCE_URL", "https://api.vultrinference.com/v1/chat/completions")
+OPENAI_API_BASE = os.environ.get("OPENAI_API_BASE", "https://api.vultrinference.com/v1")
+VULTR_SERVERLESS_URL = os.environ.get("VULTR_INFERENCE_URL", f"{OPENAI_API_BASE.rstrip('/')}/chat/completions")
 VULTR_API_KEY = os.environ.get("VULTR_API_KEY", "MOCK_KEY_FOR_TESTING")
+SANDBOX_MODE = os.environ.get("SANDBOX_MODE", "strict")
 DEFAULT_MODEL = os.environ.get("VULTR_MODEL", "llama-3.3-70b-instruct")
 
 supervisor = SandboxSupervisor(timeout_sec=15)
 
 class AgentRunRequest(BaseModel):
     prompt: str
-    sandbox_mode: Optional[str] = "container"
+    sandbox_mode: Optional[str] = "strict"
     mock: Optional[bool] = False
 
 class AgentRunResponse(BaseModel):
