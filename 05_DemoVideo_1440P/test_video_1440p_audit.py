@@ -7,6 +7,11 @@ Asserts 5-act Hollywood structure, 2:00-3:00 total duration, > 50% Live Demo, Ti
 import os
 import unittest
 
+def draw_vector_pointer(draw, x, y, color=(251, 191, 36), size=16):
+    """Draw pure vector triangle pointer per Rule 87."""
+    half = size // 2
+    draw.polygon([(x, y - half), (x + size, y), (x, y + half)], fill=color)
+
 class TestVideo1440pAudit(unittest.TestCase):
     def setUp(self):
         self.script_path = os.path.join(os.path.dirname(__file__), "video_script.md")
@@ -17,6 +22,13 @@ class TestVideo1440pAudit(unittest.TestCase):
         mp4_path = os.path.join(os.path.dirname(__file__), "demo_video_1440p.mp4")
         self.assertTrue(os.path.exists(mp4_path), "demo_video_1440p.mp4 must exist")
         self.assertGreater(os.path.getsize(mp4_path), 100000, "demo_video_1440p.mp4 must not be empty")
+        import subprocess
+        res = subprocess.run(
+            ["ffmpeg", "-i", mp4_path, "-af", "volumedetect", "-vn", "-sn", "-dn", "-f", "null", "NUL"],
+            capture_output=True, text=True, encoding="utf-8", errors="replace"
+        )
+        self.assertNotIn("mean_volume: -91.0 dB", res.stderr, "Audio stream must not be silent (-91.0 dB)!")
+        self.assertIn("mean_volume:", res.stderr, "Audio stream volume must be detectable")
 
     def test_five_act_structure(self):
         with open(self.script_path, "r", encoding="utf-8") as f:
