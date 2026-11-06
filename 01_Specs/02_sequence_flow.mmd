@@ -4,17 +4,17 @@ sequenceDiagram
     participant Backend as FastAPI Gateway
     participant LLM as Vultr Serverless Inference
     participant Super as Sandbox Supervisor
-    participant Box as Throwaway Docker Sandbox
+    participant Sandbox as Throwaway Docker Sandbox
     participant Memory as ZDR Memory Guard
 
     Client->>Backend: POST /api/v1/agent/run (Instruction)
     Backend->>LLM: POST /v1/chat/completions (Plan generation)
     LLM-->>Backend: Tool call plan (Shell / Browser actions)
     Backend->>Super: Dispatch action with timeout & limits
-    Super->>Box: Spin up disposable container (cgroup limits)
-    Box->>Box: Execute command (isolated air-gap)
-    Box-->>Super: Return stdout, stderr, and exit code
-    Super->>Box: Teardown container & wipe mounts
+    Super->>Sandbox: Spin up disposable container (cgroup limits)
+    Sandbox->>Sandbox: Execute command (isolated air-gap)
+    Sandbox-->>Super: Return stdout, stderr, and exit code
+    Super->>Sandbox: Teardown container & wipe mounts
     Super-->>Backend: Structured containment receipt
     Backend->>Memory: Execute ZDR physical wipe (0xAA -> 0x00)
     Memory-->>Backend: 0.00 MB residue confirmed
