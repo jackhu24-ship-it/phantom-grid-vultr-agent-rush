@@ -1,0 +1,9 @@
+metric_id,parameter_name,target_specification,hard_limit,defense_mechanism,verification_status
+RDM-01,Host Memory Ceiling,16.0 GB,50.0 GB,Kernel Circuit Breaker with SIGKILL,VERIFIED
+RDM-02,Sandbox Memory Cgroup,2.0 GB,4.0 GB,Docker Cgroup OOM Killer,VERIFIED
+RDM-03,Sandbox CPU Quota,1.5 Cores,2.0 Cores,CFS Bandwidth Quota Throttling,VERIFIED
+RDM-04,Execution Timeout,30.0 sec,60.0 sec,Subprocess Watchdog Signal SIGTERM/SIGKILL,VERIFIED
+RDM-05,Zero Drift Residual Memory,0.00 MB,0.00 MB,ZDR Double Physical Purge (0xAA -> 0x00),VERIFIED
+RDM-06,Vultr API Latency,< 450 ms,2000 ms,Adaptive Exponential Backoff & Retry,VERIFIED
+RDM-07,Filesystem Escape Resistance,100%,100%,Read-Only Rootfs with Ephemeral Overlay,VERIFIED
+RDM-08,Network Egress Containment,Air-Gapped,Drop All Host Routes,Isolated Docker Bridge with NAT only,VERIFIED

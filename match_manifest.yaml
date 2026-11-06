@@ -1,23 +1,29 @@
 tournament_id: '20'
-tournament_name: 'Vultr - Agent Rush Hackathon'
-project_title: 'PHANToM GRID :: Vultr - Agent Rush Hackathon'
-platform: Lablab.ai
-portal_url: 'https://lablab.ai/event/vultr-agent-rush'
-prize_pool: '$9,000+ USD'
-focus_domain: 'Sandboxed Real-World Agents & Autonomous Execution'
-lead_agents: 'Supreme Commander Jack Hu ✕ Commander Xiaomi ✕ Pioneer Xiao-Ke ✕ Commander Xiao-Ma'
-status: REGISTERED_IN_PREPARATION
+tournament_name: 'Vultr: Agent Rush Hackathon'
+project_title: 'PHANToM GRID :: Sandboxed Agent Gateway on Vultr Cloud'
+platform: Lablab.ai ✕ Vultr
+portal_url: https://lablab.ai
+team_dashboard_url: https://lablab.ai/ai-hackathons/vultr-hackathon/phantom-grid
+team_name: phantom-grid
+membership_policy: Closed (No new members allowed / Solo Sovereign)
+prize_pool: $15,000 USD ($9,000 Cash + $5,000 Vultr Credits)
+focus_domain: Sandboxed Real-World Agents & Autonomous Execution
+lead_agents: Supreme Commander Jack Hu ✕ Commander Xiaomi ✕ Pioneer Xiao-Ke ✕ Commander
+  Xiao-Ma
+status: TEAM_REGISTERED_PENDING_WINDOW
+registration_status: APPROVED_TEAM_LOCKED
+competition_window:
+  online_build: November 03 - 08, 2026
+  start_time_tst: 2026-11-03 23:00 TST (Tuesday, November 3, 2026 11:00 PM CST)
+  deadline_tst: 2026-11-08 23:59 TST
+  onsite_showcase: November 08, 2026 (Salt Lake City, UT - Optional)
+format: Hybrid (Online Build Primary + Optional Onsite)
 solo_compliant: true
 free_entry: true
-registration_fee: '$0.00'
-evaluation:
-  metric_name: 'Agent Reliability, Sandbox Containment, and Real-World Execution Fidelity'
-  input_spec: 'User instructions, terminal tool requests, browser workflow commands, and adversarial test vectors.'
-  output_spec: 'Containment-isolated task results, Vultr Serverless LLM traces, and zero-leak state receipts.'
+credits_granted: $200 Vultr Cloud Credits
 rules:
   rule_65_tri_standard: true
-  rule_74_work_end_update: true
   vram_limit_gb: 50.0
   zdr_zero_residue_mb: 0.0
+  video_resolution: 2560x1440 True 1440P QHD
   isolated_sandbox_boundary: true
-  vultr_serverless_endpoint: 'https://api.vultrinference.com/v1'

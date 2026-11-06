@@ -1,0 +1,11 @@
+flowchart TD
+    User["Web User / Operator Console"] -->|"HTTPS / WebSocket"| Edge["Vultr Cloud Firewall & Nginx Ingress"]
+    Edge -->|"Proxy Traffic"| API["FastAPI Orchestrator & FastMCP Server"]
+    API -->|"OpenAI API Protocol"| VSI["Vultr Serverless Inference"]
+    API -->|"Isolation Dispatch"| Guard["Sandbox Supervisor"]
+    Guard -->|"Spawn Container"| Container["Isolated Disposable Docker Sandbox"]
+    Container -->|"Execution Logs"| Guard
+    Container -->|"Air-Gapped Execution"| Tool["Bash Tool / Headless Browser"]
+    Guard -->|"Sanitized JSON Result"| API
+    API -->|"ZDR Purge Signal"| ZDR["0xAA -> 0x00 Memory Nullifier"]
+    ZDR -->|"Zero Residue"| State["ASIL-D Audit Ledger"]

@@ -1,0 +1,15 @@
+stateDiagram-v2
+    [*] --> STANDBY: Initialize Orchestrator
+    STANDBY --> INGRESS_RECEIVED: Receive User Directive
+    INGRESS_RECEIVED --> INFERENCE_ACTIVE: Call Vultr Serverless Inference
+    INFERENCE_ACTIVE --> SANDBOX_SPAWNING: Parse Tool Execution Plan
+    SANDBOX_SPAWNING --> CONTAINER_RUNNING: Launch Throwaway Container
+    CONTAINER_RUNNING --> THREAT_CONTAINED: Trap Destructive Command or Loop
+    CONTAINER_RUNNING --> EXECUTION_SUCCESS: Clean Command Completion
+    THREAT_CONTAINED --> CONTAINER_TEARDOWN: Force Kill Container & Reclaim Limits
+    EXECUTION_SUCCESS --> CONTAINER_TEARDOWN: Graceful Container Prune
+    CONTAINER_TEARDOWN --> ZDR_PURGING: Invoke Memory Scrubbing
+    ZDR_PURGING --> AUDIT_SEALED: Verify Residue == 0.00 MB
+    AUDIT_SEALED --> STANDBY: Await Next Task
+    CONTAINER_RUNNING --> CIRCUIT_BREAKER_TRIGGERED: Memory > 50GB or Timeout
+    CIRCUIT_BREAKER_TRIGGERED --> CONTAINER_TEARDOWN: Emergency Kill

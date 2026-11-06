@@ -1,0 +1,25 @@
+{
+  "release_tag": "v1.0.0",
+  "tournament_id": "20",
+  "tournament_name": "Vultr - Agent Rush Hackathon",
+  "archive_file": "phantom_grid_vultr_release_v1.0.0.zip",
+  "sha256": "53bcb2ea426d2cd1f296d1c0addbff1adbf929fbb98cb9d466843d507d47c73e",
+  "drawers_included": [
+    "01_Specs",
+    "02_SourceCode",
+    "03_CoverImage_16x9",
+    "04_Slides_PDF",
+    "05_DemoVideo_1440P",
+    "06_Deploy_and_Sandbox",
+    "07_SubmissionPackage",
+    "08_AuditReceipts",
+    "09_ChaosReports",
+    "10_Releases"
+  ],
+  "signatories": [
+    "Supreme Commander Jack Hu (Solo HITL Sovereign)",
+    "Commander Xiaomi (Chief of Staff & Customs Controller)",
+    "Pioneer Xiao-Ke (Office 1)",
+    "Commander Xiao-Ma (Office 3)"
+  ]
+}

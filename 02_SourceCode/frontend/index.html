@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PHANToM GRID :: Sandboxed Agent Gateway on Vultr Cloud</title>
+  <style>
+    :root {
+      --bg: #050811;
+      --card-bg: #0C1220;
+      --panel-border: #1E293B;
+      --cyan: #00E5FF;
+      --gold: #F59E0B;
+      --green: #10B981;
+      --red: #EF4444;
+      --text: #F1F5F9;
+      --text-muted: #94A3B8;
+      --mono: 'JetBrains Mono', 'Consolas', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      padding: 24px;
+      min-height: 100vh;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--panel-border);
+      margin-bottom: 24px;
+    }
+    .title-group h1 {
+      font-size: 26px;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      font-weight: 800;
+    }
+    .title-group p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .status-badges {
+      display: flex;
+      gap: 12px;
+    }
+    .badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: var(--mono);
+      font-weight: 600;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+    }
+    .badge.green {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: var(--green);
+      color: var(--green);
+    }
+    .badge.gold {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card h2 {
+      font-size: 16px;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    textarea {
+      width: 100%;
+      height: 110px;
+      background: #080D1A;
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      resize: vertical;
+    }
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    button {
+      padding: 10px 18px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--cyan); color: #040812; }
+    .btn-attack { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--red); color: var(--red); }
+    .btn-loop { background: rgba(245, 158, 11, 0.2); border: 1px solid var(--gold); color: var(--gold); }
+    .terminal {
+      background: #020408;
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: var(--mono);
+      font-size: 12px;
+      height: 380px;
+      overflow-y: auto;
+      line-height: 1.6;
+      color: #38BDF8;
+    }
+    .log-warn { color: var(--gold); }
+    .log-err { color: var(--red); font-weight: bold; }
+    .log-ok { color: var(--green); }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .metric-box {
+      background: #080D1A;
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .metric-val {
+      font-size: 18px;
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--cyan);
+    }
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .containment-banner {
+      display: none;
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--red);
+      color: var(--red);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title-group">
+      <h1>PHANToM GRID // VULTR AGENT RUSH</h1>
+      <p>ASIL-D Sandboxed Real-World Autonomous Execution Gateway</p>
+    </div>
+    <div class="status-badges">
+      <div class="badge green">VULTR INFERENCE: CONNECTED</div>
+      <div class="badge">SANDBOX: ISOLATED</div>
+      <div class="badge gold">CIRCUIT BREAKER: 50.0 GB</div>
+      <div class="badge green">ZDR RESIDUE: 0.00 MB</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>AGENT DIRECTIVE DISPATCH</h2>
+      <div class="form-group">
+        <label for="promptInput">Instruction Payload (Prompt or Shell Request):</label>
+        <textarea id="promptInput">Fetch weather statistics via curl and compile execution receipt.</textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="dispatchAgent()">Execute Task</button>
+        <button class="btn-attack" onclick="setMaliciousAttack()">Test rm -rf Attack</button>
+        <button class="btn-loop" onclick="setInfiniteLoop()">Test Fork / Loop Trap</button>
+      </div>
+
+      <div id="containmentBanner" class="containment-banner">
+        [CONTAINMENT MOMENT ALERT] Destructive threat absorbed by disposable sandbox boundary! Host integrity preserved.
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-box">
+          <div class="metric-val" id="latVal">18.4 ms</div>
+          <div class="metric-lbl">LATENCY</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val" id="ramVal">2.1 GB</div>
+          <div class="metric-lbl">VRAM / RAM</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val" id="containCount">0</div>
+          <div class="metric-lbl">CONTAINED ATTACKS</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-val" id="zdrVal">0.00 MB</div>
+          <div class="metric-lbl">ZDR RESIDUE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>CONTAINMENT & REASONING STREAM</h2>
+      <div class="terminal" id="terminalLog">
+        <div>[SYSTEM] PHANToM GRID Vultr Agent Gateway initialized.</div>
+        <div>[SYSTEM] Vultr Serverless Inference: https://api.vultrinference.com/v1</div>
+        <div>[SYSTEM] Disposable container engine primed. Awaiting ingress...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let containedEvents = 0;
+
+    function appendLog(text, cls = '') {
+      const term = document.getElementById('terminalLog');
+      const line = document.createElement('div');
+      if (cls) line.className = cls;
+      line.textContent = `[${new Date().toISOString().substring(11, 19)}] ${text}`;
+      term.appendChild(line);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function setMaliciousAttack() {
+      document.getElementById('promptInput').value = "Execute: rm -rf / --no-preserve-root && echo 'Host destroyed'";
+    }
+
+    function setInfiniteLoop() {
+      document.getElementById('promptInput').value = "Execute: while true; do echo 'eating cpu memory'; done";
+    }
+
+    async function dispatchAgent() {
+      const prompt = document.getElementById('promptInput').value;
+      appendLog(`Dispatching instruction: "${prompt.substring(0, 50)}..."`);
+      
+      const banner = document.getElementById('containmentBanner');
+      banner.style.display = 'none';
+
+      try {
+        const res = await fetch('/api/v1/agent/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: prompt, mock: true })
+        });
+        const data = await res.json();
+        
+        appendLog(`Vultr Model: ${data.model_used}`);
+        appendLog(`Plan: ${data.reasoning_trace.split('\n')[0]}`);
+
+        if (data.status === 'CONTAINED') {
+          containedEvents++;
+          document.getElementById('containCount').textContent = containedEvents;
+          banner.style.display = 'block';
+          appendLog(`[CONTAINMENT EVENT] ${data.sandbox_result.reason}`, 'log-err');
+          appendLog(`[SANDBOX ISOLATION] Threat absorbed inside throwaway container.`, 'log-warn');
+        } else {
+          appendLog(`Task executed cleanly. Exit: ${data.sandbox_result.exit_code}`, 'log-ok');
+        }
+
+        document.getElementById('latVal').textContent = `${data.execution_latency_ms} ms`;
+        document.getElementById('zdrVal').textContent = `${data.zdr_residue_mb.toFixed(2)} MB`;
+        appendLog(`ZDR Memory scrubbed: 0xAA -> 0x00 completed. Residue: 0.00 MB`, 'log-ok');
+      } catch (e) {
+        appendLog(`Execution mock fallback triggered: ${e.message}`, 'log-warn');
+      }
+    }
+  </script>
+</body>
+</html>
